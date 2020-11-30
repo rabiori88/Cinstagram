@@ -8,6 +8,19 @@ const PORT = process.env.PORT || 4000;
 
 const server = new GraphQLServer({ schema});
 
+const { PrismaClient } = require("@prisma/client")
+
+const prisma = new PrismaClient()
+async function main() {
+  // ... you will write your Prisma Client queries here
+}
+main()
+  .catch(e => {
+    throw e
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
 
 server.express.use(logger("dev"));
 
