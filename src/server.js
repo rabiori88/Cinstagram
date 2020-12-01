@@ -1,28 +1,35 @@
-require("dotenv").config()
-import {GraphQLServer} from "graphql-yoga"
+const { GraphQLServer } = require('graphql-yoga')
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient()
+
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+
 import logger from "morgan"
+require("dotenv").config()
 import schema from "./schema"
 
-const PORT = process.env.PORT || 4000;
+// const PORT = 5000;
+//const prisma = new PrismaClient()
 
 
-const server = new GraphQLServer({ schema});
+const server = new GraphQLServer({
+  schema,
+  playground: true,
+  context: {
+    prisma,
+  }
+})
 
-const { PrismaClient } = require("@prisma/client")
-
-const prisma = new PrismaClient()
-async function main() {
-  // ... you will write your Prisma Client queries here
+const options = {
+port: 8000,
+endpoint: '/graphql',
+subscriptions: '/subscriptions',
+playground: '/playground',
 }
-main()
-  .catch(e => {
-    throw e
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
 
-server.express.use(logger("dev"));
-
-server.start({PORT}, () => 
-    console.log(`✅ Server running on http://localhost:${PORT}`));
+server.get();
+server.start(options, ({ port }) =>
+  console.log(
+    `Server started, listening on port ${port} for incoming requests.`,
+  ),
+)

@@ -16,7 +16,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/server.js"
+    "dev": "nodemon --exec babel-node src/server.js",
+    "generate": "prisma generate",
+    "prisma": "yarn run deploy && yarn run generate",
+    "deploy": "prisma db push --preview-feature --force"
   },
   "devDependencies": {
     "@prisma/cli": "2.12.1"
